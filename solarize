@@ -68,7 +68,10 @@ def _set_profile(profile, **conf):
 def _next_scheme(profile):
     c = gconf.client_get_default()
     scheme = c.get_string(_gpath('profiles', profile, 'solarized_scheme'))
-    return 'light' if scheme == 'dark' else 'dark'
+    if scheme == 'dark':
+        return 'light'
+    else:
+        return 'dark'
 
 
 def _gpath(*parts):
@@ -92,7 +95,10 @@ def main():
                   help='gnome-terminal profile name to set, default="%default"')
     opts, args = op.parse_args()
 
-    scheme = args[0] if args else _next_scheme(opts.profile)
+    if args:
+        scheme = args[0]
+    else:
+        scheme = _next_scheme(opts.profile)
     if scheme in ('dark', 'light'):
         _solarize(profile=opts.profile, scheme=scheme)
     else:
